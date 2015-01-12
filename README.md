@@ -25,3 +25,53 @@
        format：当dataType="date" 时，可以设置改值，默认为 yyyy/MM/dd ,倘若前端传入值为 2010-08-22，则必须设置format="yyyy-MM-dd"
     5、datasource 节点用于配置数据源
 
+### 一个示例配置如下:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <procedures xmlns="http://www.dist.com.cn"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.dist.com.cn distprocedure.xsd">
+        <datasource src="config.properties">
+            <driver>${driverClassName}</driver>
+            <url>${url}</url>
+            <username>${username}</username>
+            <password>${password}</password>
+        </datasource>
+        <procedure id="testPro">
+            <proName>pro_test</proName>
+            <parameters>
+                <parameter name="p_str" type="in" dataType="varchar"/>
+                <parameter name="p_str2" type="in" dataType="varchar"/>
+                <parameter name="p_num" type="in" dataType="number" />
+                <parameter name="p_strDate" type="in" dataType="date" format="yyyy-MM-dd" />
+                <parameter name="p_date" type="in" dataType="date" />
+                <parameter name="p_info" type="out" dataType="varchar" />
+                <parameter name="p_cursor" type="out" dataType="cursor" vo="dist.dgp.controller.Person"/>
+            </parameters>
+        </procedure>
+    </procedures>
+    
+### 版本更新说明:
+
+        -------------------1.0.1-replease--------------------
+        1、支持注释节点的解析
+        2、支持配置多个配置文件，比如对应的控制器类中的features属性设置如下:
+             p:features="features1.xml features2.xml features3.xml"
+        3、name、desc、proName、executeClass、excuteMethod、parameters 忽略大小写影响
+        
+        -------------------1.0.2-replease--------------------
+        1、消除了在配置文件中的空格影响，比如如下的配置:
+           <proName>importCatalog</proName> 与 <proName>  importCatalog    </proName>
+           上述两种配置是等效的。在1.0.2-replease版本之前后者配置方式无效
+        2、支持新增 format 属性，自动处理存储过程中日期类型的参数传字符串格式的数据的情况，当前端传一个字符串的日期数据时，设置 format 属性值为前端值格式，默认值为 yyyy/MM/dd
+           比如值为“2010-08-22”时，设置format=“yyyy-MM-dd”,而值为“2010/08/22”,可以不用设置 format 属性
+           注意:只有 dataType="date" 类型的参数才需要 format 属性
+        3、支持新增 desc 节点，desc 节点用来对存储过程进行描述
+        4、配置文件路径问题，以前只能加载类路径下的配置文件，现在可以同时加载类路径和文件系统下的配置文件，而且可以以空格和逗号分隔，如下:
+           p:features="features1.xml,F:\MyEclipseWorkSpace\SZMDServer\src\features.xml features3.xml"
+           
+        -------------------1.1.0-replease--------------------
+        1、解除对 spring 的依赖
+        2、新增 datasource 节点
+        3、新增ProcedureRepository存储过程仓库
+        4、新增ProcedureListener配置文件监听器
