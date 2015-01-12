@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT procedures (procedure*)>
+<!ELEMENT procedure (name,desc?,proName,executeClass?,executeMethod?,parameters)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT desc (#PCDATA)>
+<!ELEMENT proName (#PCDATA)>
+<!ELEMENT executeClass (#PCDATA) >
+<!ELEMENT executeMethod (#PCDATA)>
+<!ELEMENT parameters (parameter+)>
+<!ELEMENT parameter EMPTY>
+<!ATTLIST parameter name ID #REQUIRED>
+<!ATTLIST parameter type (in|out) #REQUIRED>
+<!ATTLIST parameter dataType (varchar|number|date|cursor|clob|blob)  #REQUIRED>
+<!ATTLIST parameter format CDATA #IMPLIED>
+<!ATTLIST parameter vo CDATA #IMPLIED>
