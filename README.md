@@ -23,4 +23,5 @@
        dataType：参数类型，比如varchar代表字符串，date 代表日期类型参数,cursor 代表游标，也可以传具体值，比如varchar=4  date=91
        vo：当 type="out" dataType="cursor" 时，需要设置该值
        format：当dataType="date" 时，可以设置改值，默认为 yyyy/MM/dd ,倘若前端传入值为 2010-08-22，则必须设置format="yyyy-MM-dd"
+    5、datasource 节点用于配置数据源
 
