@@ -1,0 +1,38 @@
+import dist.common.rules.define.*
+import java.util.List
+import org.w3c.dom.Document
+import org.w3c.dom.Element
+import dist.dgp.controller.Person
+
+
+//在规则文件当中定义的函数
+function Element createElement(Document document,Person person){
+    Element element=document.createElement("person");
+    element.setAttribute("name",person.getName());
+    element.setAttribute("birth",person.getAge().toLocaleString());
+    element.setAttribute("id",person.getId().toString());
+    element.setAttribute("school",person.getSchool());
+    return element;
+}
+
+rule "DemoCase"
+    no-loop true
+    salience 1
+    date-effective "2015-01-01"
+    date-expires "2017-01-01"
+    when
+        obj:RuleObject(source!=null,source instanceof List)
+    then
+        try {
+             List<Person> list=(List<Person>) obj.getSource();
+             Document document=CommonUtil.createDocument();
+             Element root=document.createElement("tree");
+             for(Person person:list){
+                 root.appendChild(createElement(document,person));
+             }
+             document.appendChild(root);
+             obj.setResult(CommonUtil.XMLToString(document));
+        } catch (Exception e) {
+             e.printStackTrace();
+        }
+end

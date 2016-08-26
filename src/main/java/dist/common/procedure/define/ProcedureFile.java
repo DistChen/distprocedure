@@ -1,4 +1,7 @@
 package dist.common.procedure.define;
+import dist.common.rules.define.EnumFilterType;
+import dist.common.rules.define.RuleInfo;
+import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,6 +14,9 @@ import java.util.*;
  * Created by dist on 14-12-30.
  */
 public class ProcedureFile {
+
+    private static Logger log=Logger.getLogger(ProcedureFile.class);
+
     private static Map<String, Integer> sqlTypes = new HashMap<String, Integer>();
     /**
      * 初始化SQL数据类型字典
@@ -18,13 +24,18 @@ public class ProcedureFile {
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
-    private static void initSQLType() throws IllegalArgumentException, IllegalAccessException {
-        ArrayList<Field> fields = new ArrayList<Field>(Arrays.asList(Types.class.getFields()));
-        fields.addAll(Arrays.asList(oracle.jdbc.OracleTypes.class.getFields()));
-        for (Field field : fields) {
-            if (field.getType() == int.class) {
-                sqlTypes.put(field.getName(), (Integer) field.get(null));
+     static{
+        try{
+            ArrayList<Field> fields = new ArrayList<Field>(Arrays.asList(Types.class.getFields()));
+            fields.addAll(Arrays.asList(oracle.jdbc.OracleTypes.class.getFields()));
+            for (Field field : fields) {
+                if (field.getType() == int.class) {
+                    sqlTypes.put(field.getName(), (Integer) field.get(null));
+                }
             }
+        }catch (Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -42,6 +53,7 @@ public class ProcedureFile {
             if (sqlType != null) {
                 return sqlType;
             } else {
+                log.error("参数设置有误,未找到类型为[" + dataType + "]的参数，请检查并修改配置项！");
                 throw new IllegalArgumentException("参数设置有误,未找到类型为【" + dataType + "】的参数，请检查并修改配置项！");
             }
         }
@@ -99,11 +111,14 @@ public class ProcedureFile {
                         inParas.setDateFormat(attrs.getNamedItem("format").getNodeValue().trim());
                     }
                     paras.add(inParas);
+                    log.debug("解析[" + inParas.getParameterName() + "]参数.");
                 } else if (attrs.getNamedItem("type").getNodeValue().trim().equalsIgnoreCase("out")) {
                     outParas = new ProcedureOutPrameter(attrs.getNamedItem("name").getNodeValue().trim(), getSQLType(attrs.getNamedItem("dataType").getNodeValue().trim()));
                     if (attrs.getNamedItem("vo") != null) {
                         outParas.setVoClass(Class.forName(attrs.getNamedItem("vo").getNodeValue().trim()).newInstance().getClass());
                     }
+                    log.debug("解析["+outParas.getParameterName()+"]参数.");
+                    paramRuleHandler(outParas,nodeList.item(i));
                     paras.add(outParas);
                 }
             }
@@ -111,12 +126,44 @@ public class ProcedureFile {
         procedureModel.setProcedureParameters(paras);
     }
 
+
+    private static void paramRuleHandler(ProcedureOutPrameter param,Node node){
+        NodeList childs=node.getChildNodes();
+        Node rule;
+        NamedNodeMap attrs;
+        for (int i=0;i<childs.getLength();i++){
+            rule=childs.item(i);
+            if (rule.getNodeType()==1){
+                attrs = rule.getAttributes();
+                RuleInfo ruleInfo=new RuleInfo();
+                log.debug("解析参数["+param.getParameterName()+"]的规则");
+                if (attrs.getNamedItem("ruleFile")==null){
+                    log.debug("参数[" + param.getParameterName() + "]设置的规则未指定规则文件，规则未生效");
+                }else{
+                    ruleInfo.setRuleFilePath(attrs.getNamedItem("ruleFile").getNodeValue().trim());
+                    if (attrs.getNamedItem("group")!=null){
+                        ruleInfo.setRuleGroup(attrs.getNamedItem("group").getNodeValue().trim());
+                    }
+                    if (attrs.getNamedItem("filterKey")!=null){
+                        ruleInfo.setFilterKey(attrs.getNamedItem("filterKey").getNodeValue().trim());
+                    }
+                    if (attrs.getNamedItem("filterType")!=null){
+                        EnumFilterType type=EnumFilterType.valueOf(attrs.getNamedItem("filterType").getNodeValue().trim().toUpperCase(Locale.ENGLISH));
+                        ruleInfo.setFilterType(type);
+                    }
+                    param.setRuleInfo(ruleInfo);
+                }
+            }
+        }
+    }
+
     /**
      * init the datasource
      * @param document
      */
     private static void initDatasource(Document document){
-        if(document.getElementsByTagName("datasource")!=null){
+        if(document.getElementsByTagName("datasource").getLength()>0){
+            log.debug("解析数据源........");
             Node node = document.getElementsByTagName("datasource").item(0);
             String driver="",url="",username="",password="";
             for (int i = 0 ;i<node.getChildNodes().getLength();i++){
@@ -133,6 +180,7 @@ public class ProcedureFile {
             }
             if(driver.startsWith("${")){
                 try {
+                    log.debug("解析占位符........");
                     String fileName=node.getAttributes().getNamedItem("src").getNodeValue().trim();
                     Properties pros=new Properties();
                     if (fileName.matches("^[a-zA-Z]:.*properties$")){
@@ -147,8 +195,10 @@ public class ProcedureFile {
                     username=pros.getProperty(username.substring(2,username.length()-1));
                     password=pros.getProperty(password.substring(2,password.length()-1));
                 } catch (FileNotFoundException e) {
+                    log.error("未找到数据源属性配置文件"+e.getMessage());
                     e.printStackTrace();
                 } catch (IOException e) {
+                    log.error("文件打开异常:"+e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -157,51 +207,60 @@ public class ProcedureFile {
     }
 
     public static Map<String,ProcedureModel> loadFile(String[]resources){
-        if (resources.length>0){
-            try {
-                initSQLType();
-                Map<String, ProcedureModel> features = new HashMap<String, ProcedureModel>();
-                for(String fileName:resources){
-                    if (!fileName.isEmpty()){
-                        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-                        docFactory.setValidating(false);
-                        Document document;
-                        File file;
-                        if (fileName.trim().matches("^[a-zA-Z]:.*xml$")){
-                            file=new File(fileName.trim());
-                            document = docFactory.newDocumentBuilder().parse(file);
-                        }else{
+        Map<String, ProcedureModel> features = new HashMap<String, ProcedureModel>();
+        for (String fileName:resources){
+            if (!fileName.isEmpty()){
+                log.debug("---------加载配置文件["+fileName+"]---------");
+                features.putAll(loadFile(fileName));
+                log.debug("---------文件["+fileName+"]加载完毕---------");
+            }
+        }
+        return features;
+    }
 
-                            InputStream is=Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName.trim());
-                            document = docFactory.newDocumentBuilder().parse(is);
-                        }
-                        initDatasource(document);
-                        NodeList featureList = document.getElementsByTagName("procedure");
-                        NodeList featureInfos;
-                        ProcedureModel procedureModel;
-                        Node featureInfo;
-                        String id;
-                        for (int i = 0; i < featureList.getLength(); i++) {
-                            procedureModel = new ProcedureModel();
-                            id=featureList.item(i).getAttributes().getNamedItem("id").getNodeValue().trim();
-                            features.put(id,procedureModel);
-                            featureInfos = featureList.item(i).getChildNodes();
-                            for (int j = 0; j < featureInfos.getLength(); j++) {
-                                featureInfo = featureInfos.item(j);
-                                if (featureInfo.getNodeType() == 1) {
-                                    setParamValue(featureInfo, procedureModel);
-                                }
-                            }
+    public static Map<String,ProcedureModel> loadFile(String resource){
+        try {
+            Map<String, ProcedureModel> features = new HashMap<String, ProcedureModel>();
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            docFactory.setValidating(false);
+            Document document;
+            File file;
+            if (resource.trim().matches("^.*[a-zA-Z]:.*xml$")){
+                file=new File(resource.trim());
+                document = docFactory.newDocumentBuilder().parse(file);
+            }else{
+                InputStream is=Thread.currentThread().getContextClassLoader().getResourceAsStream(resource.trim());
+                document = docFactory.newDocumentBuilder().parse(is);
+            }
+            initDatasource(document);
+            NodeList featureList = document.getElementsByTagName("procedure");
+            if (featureList.getLength()==0){
+                log.debug("文件["+resource+"]中未配置存储过程模型");
+                return null;
+            }else {
+                NodeList featureInfos;
+                ProcedureModel procedureModel;
+                Node featureInfo;
+                String id;
+                for (int i = 0; i < featureList.getLength(); i++) {
+                    procedureModel = new ProcedureModel();
+                    id=featureList.item(i).getAttributes().getNamedItem("id").getNodeValue().trim();
+                    log.debug("解析[id="+id+"]的存储过程");
+                    features.put(id, procedureModel);
+                    featureInfos = featureList.item(i).getChildNodes();
+                    for (int j = 0; j < featureInfos.getLength(); j++) {
+                        featureInfo = featureInfos.item(j);
+                        if (featureInfo.getNodeType() == 1) {
+                            setParamValue(featureInfo, procedureModel);
                         }
                     }
                 }
                 return features;
-            }catch (Exception e){
-                e.printStackTrace();
-               // System.out.println("配置文件有误，配置必须遵循 distprocedure.xsd 规范");
-                return null;
             }
+        }catch (Exception e){
+            log.error(e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

@@ -1,5 +1,7 @@
 package dist.common.procedure.define;
 
+import org.apache.log4j.Logger;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,9 @@ import java.util.List;
  */
 
 public class ProcedureCaller {
+
+    private static Logger log=Logger.getLogger(ProcedureCaller.class);
+
     /**
      * 调用存储过程
      *
@@ -27,20 +32,21 @@ public class ProcedureCaller {
                     Object instance = cls.newInstance();
                     return method.invoke(instance, new Object[]{procedureModel, Arrays.asList(values)});
                 } catch (ClassNotFoundException e) {
-                    System.out.println("未找到类" + procedureModel.getExecuteClass() + ",请添加该类所在jar包。");
+                    log.error("未找到类" + procedureModel.getExecuteClass() + ",请添加该类所在jar包。");
                     e.printStackTrace();
                 } catch (NoSuchMethodException e) {
-                    System.out.println("在类" + procedureModel.getExecuteClass() + "中未找到" + procedureModel.getExecuteMethod() + "方法。");
+                    log.error("在类" + procedureModel.getExecuteClass() + "中未找到" + procedureModel.getExecuteMethod() + "方法。");
                     e.printStackTrace();
                 } catch (IllegalArgumentException e) {
-                    System.out.println("方法" + procedureModel.getExecuteMethod() + "的参数有误。");
+                    log.error("方法" + procedureModel.getExecuteMethod() + "的参数有误。");
                     e.printStackTrace();
                 } catch (Exception e) {
+                    log.error(e.getMessage());
                     e.printStackTrace();
                 }
                 return null;
             } else {
-                System.out.println("请配置该功能对应的存储过程模型.");
+                log.debug("请配置该功能对应的存储过程模型.");
                 return null;
             }
     }

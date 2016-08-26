@@ -1,5 +1,6 @@
 package dist.common.procedure.define;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +25,13 @@ public class ProcedureRepository {
 
     public static void setProcedures(Map<String, ProcedureModel> procedures) {
         ProcedureRepository.procedures = procedures;
+    }
+
+    public static void addProcedures(Map<String, ProcedureModel> procedures){
+        if ( ProcedureRepository.procedures==null){
+            ProcedureRepository.procedures=new HashMap<String, ProcedureModel>();
+        }
+        ProcedureRepository.procedures.putAll(procedures);
     }
 
     public static ProcedureModel getProcedure(String id){

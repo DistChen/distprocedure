@@ -46,7 +46,7 @@
 
     <!-- End 自定义属性编辑器  -->
     <bean id="QueryStatCtl" class="dist.dgp.controller.QueryStatCtl"
-          p:features="features.xml" />
+          p:features="distfeatures.xml" />
 
 
 </beans>

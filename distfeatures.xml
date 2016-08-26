@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<procedures xmlns="http://www.dist.com.cn"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.dist.com.cn distprocedure.xsd">
+
+    <!--datasource>
+        <driver>oracle.jdbc.driver.OracleDriver</driver>
+        <url>jdbc:oracle:thin:@127.0.0.1:1521:ORCL</url>
+        <username>scott</username>
+        <password>pass</password>
+    </datasource-->
+
+    <datasource src="config.properties">
+        <driver>${driverClassName}</driver>
+        <url>${url}</url>
+        <username>${username}</username>
+        <password>${password}</password>
+    </datasource>
+
+   <procedure id="testPro">
+        <proName>pro_test</proName>
+        <parameters>
+            <parameter name="p_str" type="in" dataType="varchar"/>
+            <parameter name="p_str2" type="in" dataType="varchar"/>
+            <parameter name="p_num" type="in" dataType="number" />
+            <parameter name="p_strDate" type="in" dataType="date" format="yyyy-MM-dd" />
+            <parameter name="p_date" type="in" dataType="date" />
+            <parameter name="p_info" type="out" dataType="varchar" />
+            <parameter name="p_cursor" type="out" dataType="cursor" vo="dist.dgp.controller.Person">
+                <!--rule ruleFile="distrule.drl" group="DemoGroup" filterKey="DemoCase" filterType="EQUAL" / -->
+                <!--rule ruleFile="F:\IDEAWorkSpace\distprocedure\src\test\resources\distrule.drl" / -->
+                <rule ruleFile="distrule.drl" />
+            </parameter>
+        </parameters>
+    </procedure>
+</procedures>

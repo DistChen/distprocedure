@@ -1,30 +1,33 @@
 package dist.dgp.controller;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 /**
  * Created by dist on 14-12-30.
  */
 public class Person {
-    public String getNaMe() {
-        return naMe;
+
+    private BigDecimal id;
+    private Date age;
+    private String school;
+    private String name;
+    public BigDecimal getId() {
+        return id;
     }
 
-    public String getStrID() {
-        return strID;
+    public void setId(BigDecimal id) {
+        this.id = id;
     }
 
-    public void setStrID(String strID) {
-        this.strID = strID;
+
+    public String getName() {
+        return name;
     }
 
-    private String strID;
-
-    public void setNaMe(String naMe) {
-        this.naMe = naMe;
+    public void setName(String name) {
+        this.name = name;
     }
-
-    private String naMe;
 
 
     public Date getAge() {
@@ -43,6 +46,4 @@ public class Person {
         this.school = school;
     }
 
-    private Date age;
-    private String school;
 }

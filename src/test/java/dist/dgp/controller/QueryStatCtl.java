@@ -2,6 +2,7 @@ package dist.dgp.controller;
 
 import dist.common.procedure.define.ProcedureCaller;
 import dist.common.procedure.define.ProcedureModel;
+import dist.common.procedure.define.ProcedureRepository;
 
 import java.util.Date;
 import java.util.Map;
@@ -18,7 +19,7 @@ public class QueryStatCtl {
                           Integer num,
                           String strDate,
                           Date date){
-        return (Map)ProcedureCaller.call(this.features.get(featureName),str,str2,num,strDate,date);
+        return (Map)ProcedureCaller.call(ProcedureRepository.getProcedure(featureName),str,str2,num,strDate,date);
     }
 
 
