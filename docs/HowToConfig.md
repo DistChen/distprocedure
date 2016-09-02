@@ -1,4 +1,4 @@
-# 1、如何配置
+# 1、配置方式
 
 DistProcedure 提供了一个监听类(dist.common.procedure.define.listener.ProcedureListener)，用于在程序启动时，加载存储过程配置文件(后面的文档会介绍此部分)中所定义的存储过程。一个最基本的配置如下：
 ```
