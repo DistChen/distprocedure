@@ -30,7 +30,6 @@
         "pageNumbers": false,
         "paperSize": "a4"
     },
-    "plugins": [],
     "title": "DistProcedure",
     "variables": {}
 }
