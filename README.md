@@ -12,7 +12,7 @@ DistProcedure 能简化存储过程的调用和结果的映射，只需要通过
 
 下面是一张流程图：
 
-![demo](images/distprocedure.png)
+![demo](docs/images/distprocedure.png)
 
 
 更多信息参考:[《DistProcedure 文档》](https://distchen.gitbooks.io/distprocedure/content/)。
