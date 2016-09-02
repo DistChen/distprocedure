@@ -1,7 +1,7 @@
 # 参考：存储过程配置规范文档
 
 
-[demo](./distfeature.xsd)
+[XML Schema:distfeature.xsd](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)
 ```
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
