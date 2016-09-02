@@ -1,7 +1,14 @@
 # 参考：存储过程配置规范文档
 
+[下载 XML Schema]((https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd))
 
-[XML Schema:distfeature.xsd](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)
+这个[XML Schema](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)文档限定了编写存储过程配置文件所需要遵守的规范。在IDE中使用能简化编写过程并校验配置文件，可以智能提示及实时的错误提示，如下所示：
+
+![](https://raw.githubusercontent.com/DistChen/distprocedure/master/docs/images/1.png)
+![](https://raw.githubusercontent.com/DistChen/distprocedure/master/docs/images/2.png)
+
+> 使用方式：在配置文件的命名空间中引用此[XML Schema](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)文件即可，可参考[存储过程配置示例文件](https://distchen.gitbooks.io/distprocedure/content/docs/distfeatures.html)。
+
 ```
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
