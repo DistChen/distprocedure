@@ -1,6 +1,6 @@
 # 2、添加存储过程配置文件
 
-上面反复提到了**存储过程配置文件**，那这个文件是干嘛用的，该怎么写？在数据库里编写了一个存储过程之后，DistProcedure 能够帮助你不用编写任何代码来完成调用及结果映射过程，其与数据库沟通的桥梁就是这个配置文件，这个配置文件相当于告诉DistProcedure:你可以调用哪些存储过程，它们各自的参数是什么，返回类似是什么，数据是否需要二次业务处理等信息。
+上面反复提到了**存储过程配置文件**，那这个文件是干嘛用的，该怎么写？在数据库里编写了一个存储过程之后，DistProcedure 能够帮助你不用编写任何代码来完成调用及结果映射过程，其与数据库沟通的桥梁就是这个配置文件，这个配置文件相当于告诉DistProcedure:你可以调用哪些存储过程，它们各自的参数是什么，返回类型是什么，数据是否需要二次业务处理等信息。
 > 此配置文件的编写规范写在了这个 [XML Schema](https://distchen.gitbooks.io/distprocedure/content/docs/distfeatures_xsd.html) 中。
 >
 >在IDE中使用这个XML Schema可以简化编写过程并校验配置文件，可以智能提示及实时的错误提示，如下所示：
@@ -106,6 +106,7 @@ persons.stream().forEach(person->System.out.println(perso.getName()));
 > > format 属性，可选。当dataType属性为date，指定的格式化形式。
 > >
 > > vo 属性，当dataType属性为cursor时，必须指定的值。此值代表返回的记录所对应的model类。
+> >
 > 8. rule 节点，parameter 子节点，用于指定规则文件路径，也可以用绝对路径，下一章介绍。
 
 上面就是添加一个存储过程后，配置文件中针对此配置文件需要配置的内容，配置内容不是很多，在IDE中还有 [XML Schema](https://distchen.gitbooks.io/distprocedure/content/docs/distfeatures_xsd.html) 来帮你智能提示和校验。如果从数据库返回来的数据不再需要处理，那么上面的配置就足够了，如果还需要处理，那就需要用到 executeClass 、executeMethod 、rule 配置信息来进行[数据的二次业务处理](https://distchen.gitbooks.io/distprocedure/content/docs/ResultHandler.html)了。
