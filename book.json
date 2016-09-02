@@ -1,9 +1,4 @@
 {
-    "author": "DistChen <chenyp@chenyp.com>",
-    "description": "",
-    "extension": null,
-    "generator": "website",
-    "isbn": null,
     "links": {
         "sharing": {
             "all": null,
@@ -15,7 +10,5 @@
         "sidebar": {
             "DistChen's Blog": "http://www.chenyp.com"
         }
-    },
-    "title": "DistProcedure",
-    "variables": {}
+    }
 }
