@@ -12,6 +12,7 @@ DistProcedure 能简化存储过程的调用和结果的映射，只需要通过
 
 下面是一张流程图：
 
-![image](http://thumbnail0.baidupcs.com/thumbnail/25961198430c2325f33bbc6cd717aa8f?fid=3926998357-250528-262855255178162&time=1472785200&rt=sh&sign=FDTAER-DCb740ccc5511e5e8fedcff06b081203-0dz7rCXli8ACZ%2BlHg5CZUayFtec%3D&expires=8h&chkv=0&chkbd=0&chkpc=&dp-logid=5693101637789292383&dp-callid=0&size=c710_u400&quality=100)
+![demo](distprocedure.png)
+
 
 更多信息参考:[《DistProcedure 文档》](https://distchen.gitbooks.io/distprocedure/content/)。
