@@ -1,6 +1,6 @@
 # 参考：存储过程配置规范文档
 
-[下载 XML Schema]((https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd))
+[下载 XML Schema](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)
 
 这个[XML Schema](https://github.com/DistChen/distprocedure/blob/master/distprocedure.xsd)文档限定了编写存储过程配置文件所需要遵守的规范。在IDE中使用能简化编写过程并校验配置文件，可以智能提示及实时的错误提示，如下所示：
 
