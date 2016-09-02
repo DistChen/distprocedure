@@ -1,7 +1,36 @@
 {
-  "links": {
+    "author": "DistChen <chenyp@chenyp.com>",
+    "description": "",
+    "extension": null,
+    "generator": "site",
+    "isbn": null,
+    "links": {
+        "sharing": {
+            "all": null,
+            "facebook": null,
+            "google": null,
+            "twitter": null,
+            "weibo": null
+        },
         "sidebar": {
-            "DistChen's Github": "http://github.com/distchen"
+            "DistChen's Blog": "http://www.chenyp.com"
         }
-    }
+    },
+    "output": null,
+    "pdf": {
+        "fontSize": 12,
+        "footerTemplate": null,
+        "headerTemplate": null,
+        "margin": {
+            "bottom": 36,
+            "left": 62,
+            "right": 62,
+            "top": 36
+        },
+        "pageNumbers": false,
+        "paperSize": "a4"
+    },
+    "plugins": [],
+    "title": "DistProcedure",
+    "variables": {}
 }
