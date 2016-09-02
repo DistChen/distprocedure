@@ -1,7 +1,7 @@
 # Summary
 
 * [简介](README.md)
-* [1、如何配置](docs/HowToConfig.md)
+* [1、配置方式](docs/HowToConfig.md)
 * [2、添加存储过程](docs/AddProcedure.md)
 * [3、启用规则引擎](docs/AddRule.md)
 * [4、使用方式](docs/UseMethod.md)
